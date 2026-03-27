@@ -1,0 +1,262 @@
+/*
+ * Hospital Alerts Bar — Frontend Styles
+ * Version: 1.0.0
+ * All values use CSS custom properties so they can be overridden via :root.
+ */
+
+/* -----------------------------------------------------------------------
+ * CSS custom property defaults (overridden via wp_add_inline_style)
+ * --------------------------------------------------------------------- */
+:root {
+    --hab-font-size:   15px;
+    --hab-padding:     14px;
+    --hab-z-index:     99999;
+    --hab-transition:  0.35s ease;
+    --hab-dot-size:    8px;
+    --hab-close-size:  28px;
+}
+
+/* -----------------------------------------------------------------------
+ * Bar wrapper
+ * --------------------------------------------------------------------- */
+.hab-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: var(--hab-z-index);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, .22);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: var(--hab-font-size);
+    line-height: 1.5;
+    transition: transform var(--hab-transition), opacity var(--hab-transition);
+}
+
+.hab-bar--top {
+    top: 0;
+}
+
+.hab-bar--bottom {
+    bottom: 0;
+}
+
+/* Dismissed state */
+.hab-bar.is-dismissed {
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-110%);
+}
+
+.hab-bar--bottom.is-dismissed {
+    transform: translateY(110%);
+}
+
+/* -----------------------------------------------------------------------
+ * Slider wrapper & slides
+ * --------------------------------------------------------------------- */
+.hab-slider-wrap {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.hab-slider {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.hab-slide {
+    display: none;
+    background-color: var(--slide-bg, #d32f2f);
+    color: var(--slide-color, #fff);
+    padding: var(--hab-padding) calc(var(--hab-close-size) + 24px) var(--hab-padding) 20px;
+    width: 100%;
+    box-sizing: border-box;
+    animation: habFadeIn 0.4s ease forwards;
+    text-align: center;
+}
+
+.hab-slide--active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes habFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -----------------------------------------------------------------------
+ * Slide inner content
+ * --------------------------------------------------------------------- */
+.hab-slide-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    text-align: center;
+}
+
+.hab-alert-title {
+    font-weight: 700;
+    font-size: 1.05em;
+    letter-spacing: 0.01em;
+}
+
+.hab-alert-sep {
+    opacity: .6;
+}
+
+.hab-alert-msg {
+    font-weight: 400;
+    opacity: .95;
+}
+
+/* -----------------------------------------------------------------------
+ * Close button
+ * --------------------------------------------------------------------- */
+.hab-close {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    width:  var(--hab-close-size);
+    height: var(--hab-close-size);
+    padding: 0;
+    background: rgba(255, 255, 255, .18);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s;
+    z-index: 2;
+    color: inherit;
+}
+
+.hab-close:hover,
+.hab-close:focus {
+    background: rgba(255, 255, 255, .35);
+    outline: 2px solid rgba(255, 255, 255, .6);
+    outline-offset: 2px;
+}
+
+.hab-close svg {
+    width:  14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    fill: none;
+}
+
+/* -----------------------------------------------------------------------
+ * Navigation dots
+ * --------------------------------------------------------------------- */
+.hab-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 0 8px;
+    background: inherit;
+}
+
+/* Inherit the slide colour for dots area */
+.hab-slide--active ~ .hab-dots {
+    background-color: var(--slide-bg, #d32f2f);
+}
+
+.hab-dot {
+    width: var(--hab-dot-size);
+    height: var(--hab-dot-size);
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, .7);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background .2s, border-color .2s, transform .2s;
+}
+
+.hab-dot--active,
+.hab-dot:hover {
+    background: rgba(255, 255, 255, .9);
+    border-color: rgba(255, 255, 255, .9);
+    transform: scale(1.2);
+}
+
+.hab-dot:focus {
+    outline: 2px solid rgba(255, 255, 255, .8);
+    outline-offset: 2px;
+}
+
+/* -----------------------------------------------------------------------
+ * Shortcode inline wrapper
+ * (overrides fixed positioning when used via [hospital_alerts])
+ * --------------------------------------------------------------------- */
+.hab-shortcode-wrap .hab-bar {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 16px 0;
+}
+
+.hab-shortcode-wrap .hab-bar.is-dismissed {
+    transform: none;
+    display: none;
+}
+
+/* -----------------------------------------------------------------------
+ * Responsive
+ * --------------------------------------------------------------------- */
+@media ( max-width: 640px ) {
+    :root {
+        --hab-font-size: 13px;
+        --hab-padding:   10px;
+        --hab-close-size: 24px;
+    }
+
+    .hab-slide-inner {
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .hab-alert-sep {
+        display: none;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * High-contrast / forced-color accessibility
+ * --------------------------------------------------------------------- */
+@media (forced-colors: active) {
+    .hab-bar {
+        border: 2px solid ButtonText;
+    }
+    .hab-close {
+        forced-color-adjust: none;
+    }
+}
+
+/* -----------------------------------------------------------------------
+ * Admin bar offset — push alert bar below WP admin bar
+ * --------------------------------------------------------------------- */
+.admin-bar .hab-bar--top {
+    top: 32px;
+}
+
+@media screen and ( max-width: 782px ) {
+    .admin-bar .hab-bar--top {
+        top: 46px;
+    }
+}
